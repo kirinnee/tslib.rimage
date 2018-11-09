@@ -9,7 +9,7 @@ let core = new Kore();
 core.ExtendPrimitives();
 
 let entry:Entry = {
-    index: "./src/init.ts"
+    index: "./src/index.ts"
 };
 
 
