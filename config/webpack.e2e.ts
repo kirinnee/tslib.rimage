@@ -10,11 +10,6 @@ import UglifyJsPlugin from "uglifyjs-webpack-plugin";
 let core = new Kore();
 core.ExtendPrimitives();
 
-let plugins: Plugin[] = pages.pages
-	.Map(s => ConvertToOption(s as Page))
-	.Map(s => new HtmlWebpackPlugin(s));
-
-
 //Add polyfill to each chunk if there is polyfill!
 let entry: Entry = new Map(pages.chunks)
 	.MapValue(v => core.WrapArray(v))
@@ -47,31 +42,31 @@ let config: webpack.Configuration = {
 			})
 		],
 		splitChunks: {
-			chunks: 'all'
-			// cacheGroups: {
-			//
-			// 	// initialize: {
-			// 	// 	test: /init/,
-			// 	// 	//priority: -5,
-			// 	// 	chunks: 'all'
-			// 	// },
-			// 	modules: {
-			// 		test: /node_modules/,
-			// 		chunks: 'all'
-			// 	},
-			// 	// polyfill:{
-			// 	// 	test:/polyfill/,
-			// 	// 	name: 'polyfill',
-			// 	// 	chunks: 'initial'
-			// 	// },
-			// }
+			name: true,
+			cacheGroups: {
+				vendors: {
+					test: /[\\/]node_modules[\\/]/,
+					priority: -10
+				},
+				default: {
+					minChunks: 2,
+					priority: -20,
+					reuseExistingChunk: true
+				}
+			}
 		}
 	},
-	plugins: plugins,
-	mode: "development",
+	mode: "production",
 	//devtool: "source-map",
 	module: {rules: rules},
 	target: "web"
 };
 
+let plugins: Plugin[] = pages.pages
+	.Map(s => ConvertToOption(s as Page))
+	.Map(s => new HtmlWebpackPlugin(s));
+
+console.log(plugins);
+
+config.plugins = plugins;
 export default config;
