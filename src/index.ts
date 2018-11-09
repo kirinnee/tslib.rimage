@@ -1,20 +1,16 @@
-import {Core, Kore} from "@kirinnee/core"; 
-import {Shape} from "./classLibrary/Shape";
-import {Rectangle} from "./classLibrary/Rectangle";
-import {Square} from "./classLibrary/Square";
+import {Rimage} from "./classLibrary/Rimage";
+import {ProgressFormat, ProgressCalculation, ImageLoadEvent, Rimager} from "./classLibrary/Rimager";
 
-let core:Core = new Kore();
-core.ExtendPrimitives();
-
-
-if(document.querySelectorAll("button")[0]!=null){
-	document.querySelectorAll("button")[0].onclick = function(){
-		document.getElementById("target")!.innerText = (document.getElementById("input") as HTMLInputElement).value.split('').reverse().join('');
-	};
+declare global{
+	interface String{
+		/**
+		 * Make the image responsive
+		 * @constructor
+		 */
+		Rimage():string;
+	}
 }
 
-
-
 export {
-	Shape, Rectangle, Square
+	Rimager,ImageLoadEvent,ProgressCalculation,ProgressFormat,Rimage
 }

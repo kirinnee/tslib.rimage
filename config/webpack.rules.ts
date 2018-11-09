@@ -1,4 +1,5 @@
 import {RuleSetRule, RuleSetUseItem} from "webpack";
+import * as path from "path";
 
 
 
@@ -16,8 +17,24 @@ let scripts: RuleSetRule = {
 	use: uses
 };
 
+/*===========================
+		FILE LOADER
+ ============================*/
+
+let fileLoader: RuleSetRule = {
+	test : /\.(jpeg|png|svg|jpg|gif)$/,
+	loader: 'file-loader',
+	options: {
+		name: '[path][name].[ext]',
+		context: path.resolve(__dirname,"../test/e2e/assets"),
+		publicPath: "https://s3-ap-southeast-1.amazonaws.com/kirin.static.host/"
+	}
+};
+
+//rules
 let rules: RuleSetRule[] = [
 	scripts,
+	fileLoader
 ];
 
 export {rules};

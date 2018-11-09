@@ -1,20 +1,18 @@
 import {IPage} from "./Helper";
+import {polyfill} from "./webpack.polyfill";
 
 let pages :IPage = {
 	chunks: [
-		["index","./src/index.ts"]
+		["polyfill", polyfill],
+		["index","./test/e2e/main.ts"],
+		["init","./test/e2e/init.ts"],
+		
 	],
 	pages: [
 		{
 			template: "index.html",
-			output: "index.html",
-			chunks: ['index'],
-			title: 'Index'
-		},
-		{
-			template: "index.html",
-			output: "home.html",
-			chunks: ['index'],
+			output: "hohoho.html",
+			chunks: ['index','polyfill'],
 			title: 'Index'
 		}
 	],
