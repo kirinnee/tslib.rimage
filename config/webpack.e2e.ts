@@ -66,7 +66,7 @@ let plugins: Plugin[] = pages.pages
 	.Map(s => ConvertToOption(s as Page))
 	.Map(s => new HtmlWebpackPlugin(s));
 
-console.log(plugins);
+//console.log(plugins);
 
 config.plugins = plugins;
 export default config;
