@@ -83,7 +83,7 @@ class Rimager {
 	 * @param firedEvent
 	 * @constructor
 	 */
-	RegisterImages(images: {[s:string]: string }, firedEvent: (ev: ImageLoadEvent)=> void = ()=>{}):void{
+	RegisterImages(images: { [s: string]: string }, firedEvent: (ev: ImageLoadEvent) => void = () => {}): { [s: string]: string } {
 		for(let k in images){
 			if(images.hasOwnProperty(k)){
 				let val:string = images[k];
@@ -124,6 +124,7 @@ class Rimager {
 				firedEvent(event);
 				resolve();
 		}));
+		return images;
 	}
 	
 	private tangentProgess(over:number,under:number, curvature:number){

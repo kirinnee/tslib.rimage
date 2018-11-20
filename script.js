@@ -20,8 +20,6 @@ async function Execute(command, args, watch) {
             await run(wp);
             break;
         case "deploy":
-            await run("node script unit --cover");
-            await run("node script e2e");
             await run("node script wp dist");
             break;
         case "publish":
