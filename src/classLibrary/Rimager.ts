@@ -78,7 +78,6 @@ class Rimager {
 		}
 	}
 	
-	
 	/**
 	 * Converts images
 	 * @param images
@@ -98,30 +97,34 @@ class Rimager {
 				let success:boolean = await rimage.RegisterImage(e);
 				if(success) pass++;
 				else fail ++;
-				let completed:number = pass + fail;
-				let over: string = `${completed}/${total}`;
-				let event: ImageLoadEvent = {
-					failed: fail,
-					succeeded: pass,
-					total: total,
-					progress: {
-						linear:{
-							percentage: `${(completed/total).toFixed(2)}%`,
-							over:over,
-							value: completed/total
-						},
-						tangential:{
-							percentage: `${rimage.tangentProgess(completed,total,5).toFixed(2)}%`,
-							over:over,
-							value: rimage.tangentProgess(completed,total,5)
-						}
-						
-					}
-				};
+			let event: ImageLoadEvent = this.ConstructEventObject(rimage, total, pass, fail);
 				firedEvent(event);
 				resolve();
 		}));
 		return imageRepo.AsObject() as ImageRepository;
+	}
+	
+	private ConstructEventObject(rimage: Rimager, total: number, pass: number, fail: number): ImageLoadEvent {
+		let completed: number = pass + fail;
+		let over: string = `${completed}/${total}`;
+		return {
+			failed: fail,
+			succeeded: pass,
+			total: total,
+			progress: {
+				linear: {
+					percentage: `${(completed / total).toFixed(2)}%`,
+					over: over,
+					value: completed / total
+				},
+				tangential: {
+					percentage: `${rimage.tangentProgess(completed, total, 5).toFixed(2)}%`,
+					over: over,
+					value: rimage.tangentProgess(completed, total, 5)
+				}
+				
+			}
+		}
 	}
 	
 	private tangentProgess(over:number,under:number, curvature:number){
@@ -148,7 +151,6 @@ class Rimager {
 		
 	}
 }
-
 
 interface ImageLoadEvent{
 	succeeded: number;
