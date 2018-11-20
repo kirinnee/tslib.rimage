@@ -1,6 +1,6 @@
 {
   "name": "@kirinnee/rimage",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Typescript Library to handle Responsive Images",
   "main": "index.js",
   "license": "MIT",
@@ -15,12 +15,12 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "deploy": "node script deploy",
-    "build":  "node script wp dist",
-    "dev":    "node script wp dist -w",
-	  "e2e":  "node script wp e2e",
-    "patch":  "node script publish patch",
-    "minor":  "node script publish minor",
-    "major":  "node script publish major"
+    "build": "node script wp dist",
+    "dev": "node script wp dist -w",
+    "e2e": "node script wp e2e",
+    "patch": "node script publish patch",
+    "minor": "node script publish minor",
+    "major": "node script publish major"
   },
   "dependencies": {
     "@kirinnee/core": "^0.7.2"
