@@ -12,13 +12,14 @@ core.ExtendPrimitives();
 let rimager: Rimager = new Rimager(core, config, false);
 
 let images: any = {
-	ryne1: sop,
-	ryne2: sophie,
+	ryne: {
+		ryne1: sop,
+		ryne2: sophie
+	},
 	book: book
 };
 
-rimager.RegisterImages(images, (ev: ImageLoadEvent) => {
-	console.log(ev);
+images = rimager.RegisterImages(images, (ev: ImageLoadEvent) => {
 	if ((document as any).attachEvent != null ? document.readyState === "complete" : document.readyState !== "loading") {
 		document.getElementById("load-progress")!.innerText = ev.progress.tangential.over;
 	}

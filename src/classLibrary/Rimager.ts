@@ -2,6 +2,8 @@ import {Core, SortType} from "@kirinnee/core";
 import {Rimage} from "./Rimage";
 
 type ReadyListener = ()=> void;
+type ImageLoadListener = (ev: ImageLoadEvent) => void;
+type ImageRepository = { [s: string]: string | ImageRepository };
 
 class Rimager {
 	
@@ -83,21 +85,16 @@ class Rimager {
 	 * @param firedEvent
 	 * @constructor
 	 */
-	RegisterImages(images: { [s: string]: string }, firedEvent: (ev: ImageLoadEvent) => void = () => {}): { [s: string]: string } {
-		for(let k in images){
-			if(images.hasOwnProperty(k)){
-				let val:string = images[k];
-				images[k] = this.modifier(val);
-			}
-		}
+	RegisterImages(images: ImageRepository, firedEvent: ImageLoadListener = () => {}): ImageRepository {
 		
-		let map: Map<string,string> = this.core.FlattenObject(images);
+		let imageRepo: Map<string, string> = this.core.FlattenObject(images).MapValue(s => this.modifier(s));
+		
 		let pass:number = 0;
 		let fail:number = 0;
-		let total: number = map.size;
+		let total: number = imageRepo.size;
 		let rimage = this;
 		
-		map.Values().Each(e => new Promise<void>(async resolve => {
+		imageRepo.Values().Each(e => new Promise<void>(async resolve => {
 				let success:boolean = await rimage.RegisterImage(e);
 				if(success) pass++;
 				else fail ++;
@@ -124,7 +121,7 @@ class Rimager {
 				firedEvent(event);
 				resolve();
 		}));
-		return images;
+		return imageRepo.AsObject() as ImageRepository;
 	}
 	
 	private tangentProgess(over:number,under:number, curvature:number){
