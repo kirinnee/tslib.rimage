@@ -15,16 +15,12 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "deploy": "node script deploy",
-    "build": "node script wp dist",
-    "dev": "node script wp dist -w",
-    "test": "node script unit",
-    "test:w": "node script unit -w",
-    "coverage": "node script unit --cover",
-    "e2e": "node script e2e",
-    "e2e:full": "node script e2e --full",
-    "patch": "node script publish patch",
-    "minor": "node script publish minor",
-    "major": "node script publish major"
+    "build":  "node script wp dist",
+    "dev":    "node script wp dist -w",
+	  "e2e":  "node script wp e2e",
+    "patch":  "node script publish patch",
+    "minor":  "node script publish minor",
+    "major":  "node script publish major"
   },
   "dependencies": {
     "@kirinnee/core": "^0.7.2"

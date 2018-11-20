@@ -2,7 +2,6 @@ import {RuleSetRule, RuleSetUseItem} from "webpack";
 import * as path from "path";
 
 
-
 /*===================
   TS LOADER
  ===================== */
@@ -30,6 +29,7 @@ let fileLoader: RuleSetRule = {
 		publicPath: "https://s3-ap-southeast-1.amazonaws.com/kirin.static.host/"
 	}
 };
+
 
 //rules
 let rules: RuleSetRule[] = [
