@@ -1,15 +1,15 @@
 // Init
-import {Core, Kore} from "@kirinnee/core";
 import {config} from "./rimage.config";
 import sop from "./assets/test/sop.png";
 import sophie from "./assets/test/sophie.png";
 import book from "./assets/test/book.png";
 import {ImageLoadEvent, Rimager} from "../../src";
+import {Core, Kore, SortType} from "@kirinnee/core";
 
 let core: Core = new Kore();
 core.ExtendPrimitives();
 
-let rimager: Rimager = new Rimager(core, config, false);
+let rimager: Rimager = new Rimager(core, config, new SortType(), false);
 
 let images: any = {
 	ryne: {
