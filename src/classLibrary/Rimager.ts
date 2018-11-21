@@ -38,7 +38,9 @@ class Rimager {
 		if(dev){
 			this.modifier = s => s;
 		}else{
-			let w:number = window.innerWidth;
+			let pd: number = window.devicePixelRatio || 1;
+			if (pd === 0) pd = 1;
+			let w: number = window.innerWidth * pd;
 			let under:number = this.sizes.get(key)!;
 			let truncated: Map<string,number> = this.sizes.MapValue(v => v/under*def);
 			let sorted: Map<string,number> =truncated.Where((k,v)=> v >= w);
