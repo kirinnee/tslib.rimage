@@ -1,5 +1,6 @@
-import {Core, SortType} from "@kirinnee/core";
+import {Core} from "@kirinnee/core";
 import {Rimage} from "./Rimage";
+import {ISortType} from "@kirinnee/core/types/SortType";
 
 type ReadyListener = ()=> void;
 type ImageLoadListener = (ev: ImageLoadEvent) => void;
@@ -7,14 +8,15 @@ type ImageRepository = { [s: string]: string | ImageRepository };
 
 class Rimager {
 	
-
 	private readonly modifier: (s:string)=>string;
 	private readonly sizes: Map<string,number>;
 	private core: Core;
+	private SortType: ISortType;
 	
-	constructor(core:Core ,rimage: Rimage, dev:boolean ) {
+	constructor(core: Core, rimage: Rimage, SortType: ISortType, dev: boolean) {
 		this.core = core;
 		core.AssertExtend();
+		this.SortType = SortType;
 		//SETUP SIZES
 		this.sizes = new Map([]);
 		let key = rimage.key;
@@ -22,14 +24,14 @@ class Rimager {
 		for(let key in rimage.sizes){
 			if(rimage.sizes.hasOwnProperty(key)){
 				let value:number = rimage.sizes[key];
-				if(!core.IsString(key)) throw new Error("size key must be non-empty string");
-				if(!key.IsAlphanumeric()) throw new Error("size key must be alphanumeric");
-				if(!core.IsNumber(value,false)) throw new Error("size value must be number");
+				if (!core.IsString(key)) this.t("key must not be empty");
+				if (!key.IsAlphanumeric()) this.t("key must be alphanumeric");
+				if (!core.IsNumber(value, false)) this.t("value must be number");
 				this.sizes.set(key, value);
 			}
 		}
-		if(this.sizes.size === 0) throw new Error("Sizes cannot be empty!");
-		if(!this.sizes.HasKey(key)) throw new Error("No default key in sizes!");
+		if (this.sizes.size === 0) this.t("size must not be empty");
+		if (!this.sizes.HasKey(key)) this.t("size must have default key");
 		
 		
 		//Use sizes to set the modifier
@@ -40,7 +42,9 @@ class Rimager {
 			let under:number = this.sizes.get(key)!;
 			let truncated: Map<string,number> = this.sizes.MapValue(v => v/under*def);
 			let sorted: Map<string,number> =truncated.Where((k,v)=> v >= w);
-			let rKey:string = sorted.size === 0 ? truncated.SortByValue(SortType.Descending).Keys().Take()!: sorted.SortByValue(SortType.Ascending).Keys().Take()!;
+			let rKey: string = sorted.size === 0 ? truncated
+				.SortByValue(this.SortType.Descending)
+				.Keys().Take()! : sorted.SortByValue(this.SortType.Ascending).Keys().Take()!;
 			
 			//set the modifier
 			this.modifier = s => {
@@ -55,27 +59,6 @@ class Rimager {
 			};
 		}
 		
-	}
-	
-	/**
-	 * Events to fire when DOM is ready
-	 * @param listener event to fire
-	 */
-	private registerReady(listener: ReadyListener){
-		if ((document as any).attachEvent != null ? document.readyState === "complete" : document.readyState !== "loading") {
-			listener();
-		} else {
-			document.addEventListener('DOMContentLoaded', () => {
-				listener();
-			});
-		}
-	}
-	
-	ExtendPrimitives() : void{
-		let r = this;
-		String.prototype.Rimage = function():string{
-			return r.modifier(this);
-		}
 	}
 	
 	/**
@@ -94,44 +77,93 @@ class Rimager {
 		let rimage = this;
 		
 		imageRepo.Values().Each(e => new Promise<void>(async resolve => {
-				let success:boolean = await rimage.RegisterImage(e);
-				if(success) pass++;
-				else fail ++;
-			let event: ImageLoadEvent = this.ConstructEventObject(rimage, total, pass, fail);
-				firedEvent(event);
-				resolve();
+			let success: boolean = await rimage.ri(e);
+			if (success) {
+				pass++;
+			} else {
+				fail++;
+			}
+			let event: ImageLoadEvent = this.ce(total, pass, fail);
+			firedEvent(event);
+			resolve();
 		}));
 		return imageRepo.AsObject() as ImageRepository;
 	}
 	
-	private ConstructEventObject(rimage: Rimager, total: number, pass: number, fail: number): ImageLoadEvent {
+	private t(error: string): void {
+		throw new Error(error);
+	}
+	
+	ExtendPrimitives(): void {
+		let r = this;
+		String.prototype.Rimage = function (): string {
+			return r.modifier(this);
+		}
+	}
+	
+	/**
+	 * Events to fire when DOM is ready
+	 * @param listener event to fire
+	 */
+	private rr(listener: ReadyListener) {
+		if ((document as any).attachEvent != null ? document.readyState === "complete" : document.readyState !== "loading") {
+			listener();
+		} else {
+			document.addEventListener('DOMContentLoaded', () => {
+				listener();
+			});
+		}
+	}
+	
+	/**
+	 * Constructs event object based on the number of current progress
+	 * @param rimage - the
+	 * @param total
+	 * @param pass
+	 * @param fail
+	 */
+	private ce(total: number, pass: number, fail: number): ImageLoadEvent {
 		let completed: number = pass + fail;
 		let over: string = `${completed}/${total}`;
+		//Convert to %
+		let p = (pro: number) => `${pro.toFixed(2)}%`;
+		let tangent = this.tp(completed, total, 5);
+		let percent = completed / total;
 		return {
 			failed: fail,
 			succeeded: pass,
 			total: total,
 			progress: {
 				linear: {
-					percentage: `${(completed / total).toFixed(2)}%`,
+					percentage: p(percent),
 					over: over,
-					value: completed / total
+					value: percent
 				},
 				tangential: {
-					percentage: `${rimage.tangentProgess(completed, total, 5).toFixed(2)}%`,
+					percentage: p(tangent),
 					over: over,
-					value: rimage.tangentProgess(completed, total, 5)
+					value: tangent
 				}
 				
 			}
 		}
 	}
 	
-	private tangentProgess(over:number,under:number, curvature:number){
+	/**
+	 * Tangential Progress. Calculates the Tangential progress
+	 * @param over the numerator
+	 * @param under the denominator
+	 * @param curvature how curve the graph will be
+	 */
+	private tp(over: number, under: number, curvature: number) {
 		return Math.tan(over*(Math.atan(curvature))/under)/curvature;
 	}
 	
-	private RegisterImage(src:string): Promise<boolean>{
+	/**
+	 * Register images
+	 * @param src the source to register
+	 */
+	private ri(src: string): Promise<boolean> {
 		let r = this;
 		let image: HTMLImageElement = new Image();
 		return new Promise<boolean>((resolve:(i:boolean)=>void)=>{
@@ -144,7 +176,7 @@ class Rimager {
 			image.src = src;
 			image.style.display = 'none';
 			image.style.position = 'absolute';
-			r.registerReady(()=>{
+			r.rr(() => {
 				document.getElementsByTagName('html')[0].append(image);
 			});
 		});

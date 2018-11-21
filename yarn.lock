@@ -3,9 +3,9 @@
 
 
 "@kirinnee/core@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@kirinnee/core/-/core-0.7.2.tgz#6fedddf2125b7053a53267745336667559de5d9c"
-  integrity sha512-0+Pt28C1fkxgpHEgcE4MCX+RNeCG96ztSPQGV2VcaeQVEE+wtpWVY65BhrtfU4L76lKNgYBBgwUhlEcWsCIR/Q==
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@kirinnee/core/-/core-0.7.4.tgz#5d1976cd0705507553799eaee2bfa8d50059e6f5"
+  integrity sha512-dW/veWusoqG4aVaBYe0PHaJHEf+o2HYiN6HH9u5ladd4hRtQGG6gKClm50/wSHq7TfDYcG9VAObSC/pSPE2mUg==
 
 "@types/chai@^4.1.6":
   version "4.1.7"
