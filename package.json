@@ -9,8 +9,8 @@
     "email": "kirinnee@gmail.com"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/kirinnee/tslib-rimage.git"
+    "type":  "git",
+	  "url": "https://github.com/kirinnee/tslib.rimage.git"
   },
   "types": "./types/index.d.ts",
   "scripts": {
