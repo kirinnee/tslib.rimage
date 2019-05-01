@@ -2,6 +2,11 @@
 
 Typescript Library to handle Responsive Images
 
+Source: [GiLab](https://gitlab.com/node-packages-kirin/rimage)
+
+Mirror: [GitHub](https://github.com/kirinnee/tslib.rimage)
+
+
 # Getting Started
 
 ## Installation
